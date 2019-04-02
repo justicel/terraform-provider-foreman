@@ -73,7 +73,7 @@ type ForemanHost struct {
 
 // ForemanInterfacesAttribute representing a hosts defined network interfaces
 type ForemanInterfacesAttribute struct {
-	Id         int    `json:"id,omitempty"`
+	//IfaceId    int    `json:"id,omitempty"`
 	SubnetId   int    `json:"subnet_id,omitempty"`
 	Identifier string `json:"identifier"`
 	Name       string `json:"name"`
@@ -88,7 +88,7 @@ type ForemanInterfacesAttribute struct {
 	Type       string `json:"type"`
 	Provider   string `json:"provider"`
 
-	// NOTE(ALL): These settings only apply to virtual machines
+	// AttachedTo/AttachedDevices only apply to Virtual Machines
 	AttachedTo      string   `json:"attached_to,omitempty"`
 	AttachedDevices []string `json:"attached_devices,omitempty"`
 	// ComputeAttributes are hypervisor specific features
@@ -413,7 +413,6 @@ func (c *Client) UpdateHost(h *ForemanHost, retryCount int) (*ForemanHost, error
 	}
 
 	log.Debugf("updatedHost: [%+v]", updatedHost)
-
 	return &updatedHost, nil
 }
 

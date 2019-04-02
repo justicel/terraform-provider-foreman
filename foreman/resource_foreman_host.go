@@ -152,149 +152,139 @@ func resourceForemanHost() *schema.Resource {
 				Description:  "ID of an image to be used as base for this host when cloning",
 			},
 
-			// -- Key Components --
 			"interfaces_attributes": &schema.Schema{
 				Type:        schema.TypeSet,
 				Optional:    true,
 				ForceNew:    true,
-				Elem:        resourceForemanInterfacesAttributes(),
-				Set:         schema.HashResource(resourceForemanInterfacesAttributes()),
 				Description: "Host interface information.",
-			},
-		},
-	}
-}
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						/*
+							"id": &schema.Schema{
+								Type:        schema.TypeInt,
+								Computed:    true,
+								Description: "Unique identifier for the interface.",
+							},
+						*/
 
-// resourceForemanInterfacesAttributes is a nested resource that represents a
-// valid interfaces attribute.  The "id" of this resource is computed and
-// assigned by Foreman at the time of creation.
-//
-// NOTE(ALL): See comments in ResourceData's "interfaces_attributes"
-//   attribute definition above
-func resourceForemanInterfacesAttributes() *schema.Resource {
-	return &schema.Resource{
-		Schema: map[string]*schema.Schema{
-			"id": &schema.Schema{
-				Type:        schema.TypeInt,
-				Computed:    true,
-				Description: "Unique identifier for the interface.",
-			},
+						// -- Optional --
 
-			// -- Optional --
-
-			"primary": &schema.Schema{
-				Type:        schema.TypeBool,
-				Optional:    true,
-				ForceNew:    true,
-				Default:     false,
-				Description: "Whether or not this is the primary interface.",
-			},
-			"ip": &schema.Schema{
-				Type:         schema.TypeString,
-				Optional:     true,
-				ForceNew:     true,
-				ValidateFunc: validation.SingleIP(),
-				Description:  "IP address associated with the interface.",
-			},
-			"mac": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				ForceNew:    true,
-				Description: "MAC address associated with the interface.",
-			},
-			"subnet_id": &schema.Schema{
-				Type:         schema.TypeInt,
-				Optional:     true,
-				ForceNew:     true,
-				ValidateFunc: validation.IntAtLeast(0),
-				Description:  "ID of the subnet to associate with this interface.",
-			},
-			"identifier": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				ForceNew:    true,
-				Description: "Identifier of this interface local to the host.",
-			},
-			"managed": &schema.Schema{
-				Type:        schema.TypeBool,
-				Optional:    true,
-				ForceNew:    true,
-				Default:     false,
-				Description: "Whether or not this interface is managed by Foreman.",
-			},
-			"provision": &schema.Schema{
-				Type:        schema.TypeBool,
-				Optional:    true,
-				ForceNew:    true,
-				Default:     false,
-				Description: "Whether or not this interface is used to provision the host.",
-			},
-			"virtual": &schema.Schema{
-				Type:        schema.TypeBool,
-				Optional:    true,
-				ForceNew:    true,
-				Default:     false,
-				Description: "Whether or not this is a virtual interface.",
-			},
-			"attached_to": &schema.Schema{
-				Type:        schema.TypeString,
-				ForceNew:    true,
-				Optional:    true,
-				Description: "Identifier of the interface to which this interface belongs.",
-			},
-			"attached_devices": &schema.Schema{
-				Type:     schema.TypeList,
-				ForceNew: true,
-				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+						"primary": &schema.Schema{
+							Type:        schema.TypeBool,
+							Optional:    true,
+							ForceNew:    true,
+							Default:     false,
+							Description: "Whether or not this is the primary interface.",
+						},
+						"ip": &schema.Schema{
+							Type:         schema.TypeString,
+							Optional:     true,
+							ForceNew:     true,
+							ValidateFunc: validation.SingleIP(),
+							Description:  "IP address associated with the interface.",
+						},
+						"mac": &schema.Schema{
+							Type:        schema.TypeString,
+							Optional:    true,
+							ForceNew:    true,
+							Description: "MAC address associated with the interface.",
+						},
+						"subnet_id": &schema.Schema{
+							Type:         schema.TypeInt,
+							Optional:     true,
+							ForceNew:     true,
+							ValidateFunc: validation.IntAtLeast(0),
+							Description:  "ID of the subnet to associate with this interface.",
+						},
+						"identifier": &schema.Schema{
+							Type:        schema.TypeString,
+							Optional:    true,
+							ForceNew:    true,
+							Description: "Identifier of this interface local to the host.",
+						},
+						"managed": &schema.Schema{
+							Type:        schema.TypeBool,
+							Optional:    true,
+							ForceNew:    true,
+							Default:     false,
+							Description: "Whether or not this interface is managed by Foreman.",
+						},
+						"provision": &schema.Schema{
+							Type:        schema.TypeBool,
+							Optional:    true,
+							ForceNew:    true,
+							Default:     false,
+							Description: "Whether or not this interface is used to provision the host.",
+						},
+						"virtual": &schema.Schema{
+							Type:        schema.TypeBool,
+							Optional:    true,
+							ForceNew:    true,
+							Default:     false,
+							Description: "Whether or not this is a virtual interface.",
+						},
+						"attached_to": &schema.Schema{
+							Type:        schema.TypeString,
+							ForceNew:    true,
+							Optional:    true,
+							Description: "Identifier of the interface to which this interface belongs.",
+						},
+						"attached_devices": &schema.Schema{
+							Type:     schema.TypeList,
+							ForceNew: true,
+							Optional: true,
+							MinItems: 1,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+							Description: "Identifiers of attached interfaces, e.g. 'eth1', 'eth2'.",
+						},
+						"username": &schema.Schema{
+							Type:        schema.TypeString,
+							ForceNew:    true,
+							Optional:    true,
+							Description: "Username used for BMC/IPMI functionality.",
+						},
+						"password": &schema.Schema{
+							Type:        schema.TypeString,
+							Sensitive:   true,
+							ForceNew:    true,
+							Optional:    true,
+							Description: "Associated password used for BMC/IPMI functionality.",
+						},
+						"type": &schema.Schema{
+							Type:     schema.TypeString,
+							Optional: true,
+							ForceNew: true,
+							ValidateFunc: validation.StringInSlice([]string{
+								"interface",
+								"bmc",
+								"bond",
+								"bridge",
+								// NOTE(ALL): false - do not ignore case when comparing values
+							}, false),
+							Description: "The type of interface. Values include: `\"interface\"`, " +
+								"`\"bmc\"`, `\"bond\"`, `\"bridge\"`.",
+						},
+						// Provider used for BMC/IPMI calls. (Default: IPMI)
+						"provider": &schema.Schema{
+							Type:     schema.TypeString,
+							Optional: true,
+							ForceNew: true,
+							ValidateFunc: validation.StringInSlice([]string{
+								"IPMI",
+								// NOTE(ALL): false - do not ignore case when comparing values
+							}, false),
+							Description: "Provider used for BMC/IMPI functionality. Values include: " +
+								"`\"IPMI\"`",
+						},
+						"compute_attributes": &schema.Schema{
+							Type:        schema.TypeMap,
+							Optional:    true,
+							Description: "Hypervisor specific interface options",
+						},
+					},
 				},
-				Description: "Identifiers of attached interfaces, e.g. 'eth1', 'eth2'.",
-			},
-			"username": &schema.Schema{
-				Type:        schema.TypeString,
-				ForceNew:    true,
-				Optional:    true,
-				Description: "Username used for BMC/IPMI functionality.",
-			},
-			"password": &schema.Schema{
-				Type:        schema.TypeString,
-				Sensitive:   true,
-				ForceNew:    true,
-				Optional:    true,
-				Description: "Associated password used for BMC/IPMI functionality.",
-			},
-			"type": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
-				ValidateFunc: validation.StringInSlice([]string{
-					"interface",
-					"bmc",
-					"bond",
-					"bridge",
-					// NOTE(ALL): false - do not ignore case when comparing values
-				}, false),
-				Description: "The type of interface. Values include: `\"interface\"`, " +
-					"`\"bmc\"`, `\"bond\"`, `\"bridge\"`.",
-			},
-			// Provider used for BMC/IPMI calls. (Default: IPMI)
-			"provider": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
-				ValidateFunc: validation.StringInSlice([]string{
-					"IPMI",
-					// NOTE(ALL): false - do not ignore case when comparing values
-				}, false),
-				Description: "Provider used for BMC/IMPI functionality. Values include: " +
-					"`\"IPMI\"`",
-			},
-			"compute_attributes": &schema.Schema{
-				Type:        schema.TypeMap,
-				Optional:    true,
-				Description: "Hypervisor specific interface options",
 			},
 		},
 	}
@@ -408,9 +398,11 @@ func mapToForemanInterfacesAttribute(m map[string]interface{}) api.ForemanInterf
 	tempIntAttr := api.ForemanInterfacesAttribute{}
 	var ok bool
 
-	if tempIntAttr.Id, ok = m["id"].(int); !ok {
-		tempIntAttr.Id = 0
-	}
+	/*
+		if tempIntAttr.IfaceId, ok = m["id"].(int); !ok {
+			tempIntAttr.IfaceId = 0
+		}
+	*/
 
 	if tempIntAttr.Primary, ok = m["primary"].(bool); !ok {
 		tempIntAttr.Primary = false
@@ -425,7 +417,7 @@ func mapToForemanInterfacesAttribute(m map[string]interface{}) api.ForemanInterf
 	}
 
 	if tempIntAttr.SubnetId, ok = m["subnet_id"].(int); !ok {
-		tempIntAttr.SubnetId = 0
+		tempIntAttr.SubnetId = -1
 	}
 
 	if tempIntAttr.MAC, ok = m["mac"].(string); !ok {
@@ -499,6 +491,9 @@ func setResourceDataFromForemanHost(d *schema.ResourceData, fh *api.ForemanHost)
 	d.Set("operatingsystem_id", fh.OperatingSystemId)
 	d.Set("medium_id", fh.MediumId)
 	d.Set("image_id", fh.ImageId)
+	log.Tracef("Likely here: %#v", fh.InterfacesAttributes)
+	d.Set("interfaces_attributes", &fh.InterfacesAttributes)
+	log.Tracef("Likely here: %#v", d.Get("interfaces_attributes"))
 
 	// In partial mode, flag keys below as completed successfully
 	d.SetPartial("name")
@@ -510,55 +505,6 @@ func setResourceDataFromForemanHost(d *schema.ResourceData, fh *api.ForemanHost)
 	d.SetPartial("medium_id")
 	d.SetPartial("image_id")
 	d.SetPartial("enable_bmc")
-
-	setResourceDataFromForemanInterfacesAttributes(d, fh.InterfacesAttributes)
-}
-
-// setResourceDataFromInterfacesAttributes sets a ResourceData's
-// "interfaces_attributes" attribute to the value of the supplied array of
-// ForemanInterfacesAttribute structs
-func setResourceDataFromForemanInterfacesAttributes(d *schema.ResourceData, fhia []api.ForemanInterfacesAttribute) {
-	// this attribute is a *schema.Set.  In order to construct a set, we need to
-	// supply a hash function so the set can differentiate for uniqueness of
-	// entries.  The hash function will be based on the resource definition
-	hashFunc := schema.HashResource(resourceForemanInterfacesAttributes())
-	// underneath, a *schema.Set stores an array of map[string]interface{} entries.
-	// convert each ForemanInterfaces struct in the supplied array to a
-	// mapstructure and then add it to the set
-	ifaceArr := make([]interface{}, len(fhia))
-	for idx, val := range fhia {
-		// NOTE(ALL): we ommit the "_destroy" property here - this does not need
-		//   to be stored by terraform in the state file. That is a hidden key that
-		//   is only used in updates.  Anything that exists will always have it
-		//   set to "false".
-		ifaceMap := map[string]interface{}{
-			"id":        val.Id,
-			"ip":        val.IP,
-			"mac":       val.MAC,
-			"name":      val.Name,
-			"subnet_id": val.SubnetId,
-			"primary":   val.Primary,
-			"managed":   val.Managed,
-			"provision": val.Provision,
-			"virtual":   val.Virtual,
-			"type":      val.Type,
-			"provider":  val.Provider,
-			"username":  val.Username,
-			"password":  val.Password,
-
-			// NOTE(ALL): These settings only apply to virtual machines
-			"attached_to":        val.AttachedTo,
-			"attached_dev":       val.AttachedDevices,
-			"compute_attributes": val.ComputeAttributes,
-		}
-		ifaceArr[idx] = ifaceMap
-	}
-	// with the array set up, create the *schema.Set and set the ResourceData's
-	// "interfaces_attributes" property
-	tempIntAttrSet := schema.NewSet(hashFunc, ifaceArr)
-	d.Set("interfaces_attributes", tempIntAttrSet)
-
-	// For partial state, passing a prefix will flag all nested keys as successful
 	d.SetPartial("interfaces_attributes")
 }
 
@@ -608,9 +554,10 @@ func resourceForemanHostCreate(d *schema.ResourceData, meta interface{}) error {
 			api.BMCBoot{
 				Device: api.BootPxe,
 			},
-			api.Power{
-				PowerAction: api.PowerOn,
-			},
+			// TODO: Dont forget to reactivate
+			//			api.Power{
+			//				PowerAction: api.PowerOn,
+			//			},
 		}
 	} else {
 		log.Debugf("Using default Foreman behaviour for startup")
