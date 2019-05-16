@@ -45,9 +45,9 @@ type ForemanHostgroup struct {
 	// ID of the environment associated with this hostgroup
 	EnvironmentId int `json:"environment_id"`
 	// ID of the organization
-	OrganizationId int `json:"organization_id"`
+	OrganizationIds []int `json:"organization_ids"`
 	// ID of the location
-	LocationId int `json:"location_id"`
+	LocationIds []int `json:"location_ids"`
 	// ID of the media associated with this hostgroup
 	MediaId int `json:"medium_id"`
 	// ID of the operating system associated with this hostgroup
@@ -82,6 +82,8 @@ func (fh ForemanHostgroup) MarshalJSON() ([]byte, error) {
 	fhMap["name"] = fh.Name
 	fhMap["root_pass"] = fh.RootPassword
 	fhMap["pxe_loader"] = fh.PXELoader
+	fhMap["organization_id"] = fh.OrganizationIds
+	fhMap["location_id"] = fh.LocationIds
 
 	fhMap["architecture_id"] = intIdToJSONString(fh.ArchitectureId)
 	fhMap["compute_profile_id"] = intIdToJSONString(fh.ComputeProfileId)
@@ -94,8 +96,6 @@ func (fh ForemanHostgroup) MarshalJSON() ([]byte, error) {
 	fhMap["puppet_ca_proxy_id"] = intIdToJSONString(fh.PuppetCAProxyId)
 	fhMap["puppet_proxy_id"] = intIdToJSONString(fh.PuppetProxyId)
 	fhMap["realm_id"] = intIdToJSONString(fh.RealmId)
-	fhMap["organization_id"] = intIdToJSONString(fh.OrganizationId)
-	fhMap["location_id"] = intIdToJSONString(fh.LocationId)
 	fhMap["subnet_id"] = intIdToJSONString(fh.SubnetId)
 
 	log.Debugf("fhMap: [%v]", fhMap)
