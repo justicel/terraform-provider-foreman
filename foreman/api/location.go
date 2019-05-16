@@ -18,11 +18,7 @@ const (
 
 type ForemanLocation struct {
 	// Inherits the base object's attributes
-	ForemanObject `json:"foreman_object"`
-
-	Name        string `json:"name"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	ForemanObject
 }
 
 // -----------------------------------------------------------------------------
