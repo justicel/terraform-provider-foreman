@@ -6,6 +6,7 @@ import (
 
 	"github.com/HanseMerkur/terraform-provider-foreman/foreman/api"
 	"github.com/wayfair/terraform-provider-utils/autodoc"
+	"github.com/wayfair/terraform-provider-utils/conv"
 	"github.com/wayfair/terraform-provider-utils/log"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -282,11 +283,11 @@ func buildForemanHostgroup(d *schema.ResourceData) *api.ForemanHostgroup {
 	}
 
 	if attr, ok = d.GetOk("locations"); ok {
-		hostgroup.Locations = attr.([]int)
+		hostgroup.Locations = conv.InterfaceSliceToIntSlice(attr.([]interface{}))
 	}
 
 	if attr, ok = d.GetOk("organizations"); ok {
-		hostgroup.Organizations = attr.([]int)
+		hostgroup.Organizations = conv.InterfaceSliceToIntSlice(attr.([]interface{}))
 	}
 
 	if attr, ok = d.GetOk("subnet_id"); ok {

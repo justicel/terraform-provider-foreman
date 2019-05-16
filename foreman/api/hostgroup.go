@@ -45,9 +45,9 @@ type ForemanHostgroup struct {
 	// ID of the environment associated with this hostgroup
 	EnvironmentId int `json:"environment_id"`
 	// ID of the organization
-	Organizations []int `json:"organizations"`
+	Organizations []int `json:"organization_ids"`
 	// ID of the location
-	Locations []int `json:"locations"`
+	Locations []int `json:"location_ids"`
 	// ID of the media associated with this hostgroup
 	MediaId int `json:"medium_id"`
 	// ID of the operating system associated with this hostgroup
@@ -82,8 +82,8 @@ func (fh ForemanHostgroup) MarshalJSON() ([]byte, error) {
 	fhMap["name"] = fh.Name
 	fhMap["root_pass"] = fh.RootPassword
 	fhMap["pxe_loader"] = fh.PXELoader
-	fhMap["organizations"] = fh.Organizations
-	fhMap["locations"] = fh.Locations
+	fhMap["organization_ids"] = fh.Organizations
+	fhMap["location_ids"] = fh.Locations
 
 	fhMap["architecture_id"] = intIdToJSONString(fh.ArchitectureId)
 	fhMap["compute_profile_id"] = intIdToJSONString(fh.ComputeProfileId)
