@@ -185,7 +185,7 @@ func resourceForemanHostgroup() *schema.Resource {
 
 			"organizations": &schema.Schema{
 				Type:     schema.TypeList,
-				Optional: true,
+				Required: true,
 				ForceNew: false,
 				Elem: &schema.Schema{
 					Type: schema.TypeInt,
@@ -194,8 +194,8 @@ func resourceForemanHostgroup() *schema.Resource {
 			},
 
 			"locations": &schema.Schema{
-				Type:     schema.TypeInt,
-				Optional: true,
+				Type:     schema.TypeList,
+				Required: true,
 				ForceNew: false,
 				Elem: &schema.Schema{
 					Type: schema.TypeInt,
