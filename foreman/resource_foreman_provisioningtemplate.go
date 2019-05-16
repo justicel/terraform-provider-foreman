@@ -96,6 +96,26 @@ func resourceForemanProvisioningTemplate() *schema.Resource {
 					"provisioning template.",
 			},
 
+			"organizations": &schema.Schema{
+				Type:     schema.TypeList,
+				Optional: true,
+				ForceNew: false,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
+				Description: "IDs of organizations this host belongs to",
+			},
+
+			"locations": &schema.Schema{
+				Type:     schema.TypeList,
+				Optional: true,
+				ForceNew: false,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
+				Description: "IDs of locations this host belongs to",
+			},
+
 			"template_combinations_attributes": &schema.Schema{
 				Type:     schema.TypeSet,
 				Optional: true,
@@ -185,6 +205,16 @@ func buildForemanProvisioningTemplate(d *schema.ResourceData) *api.ForemanProvis
 	if attr, ok = d.GetOk("operatingsystem_ids"); ok {
 		attrSet := attr.(*schema.Set)
 		template.OperatingSystemIds = conv.InterfaceSliceToIntSlice(attrSet.List())
+	}
+
+	if attr, ok = d.GetOk("organizations"); ok {
+		attrList := attr.([]interface{})
+		template.Organizations = conv.InterfaceSliceToIntSlice(attrList)
+	}
+
+	if attr, ok = d.GetOk("locations"); ok {
+		attrList := attr.([]interface{})
+		template.Locations = conv.InterfaceSliceToIntSlice(attrList)
 	}
 
 	template.TemplateCombinationsAttributes = buildForemanTemplateCombinationsAttributes(d)
@@ -278,6 +308,8 @@ func setResourceDataFromForemanProvisioningTemplate(d *schema.ResourceData, ft *
 
 	d.Set("template_kind_id", ft.TemplateKindId)
 	d.Set("operatingsystem_ids", ft.OperatingSystemIds)
+	d.Set("organisations", ft.Organizations)
+	d.Set("locations", ft.Locations)
 
 	setResourceDataFromForemanTemplateCombinationsAttributes(d, ft.TemplateCombinationsAttributes)
 

@@ -38,6 +38,10 @@ type ForemanProvisioningTemplate struct {
 	TemplateKindId int
 	// IDs of operating systems associated with this provisioning template
 	OperatingSystemIds []int
+	// ID of the organization
+	Organizations []int `json:"organization_ids"`
+	// ID of the location
+	Locations []int `json:"location_ids"`
 	// How templates are determined:
 	//
 	// When editing a template, you must assign a list of operating systems
@@ -110,6 +114,8 @@ func (ft ForemanProvisioningTemplate) MarshalJSON() ([]byte, error) {
 	//
 	// Foreman API interprets the data of this field as a REPLACE operation
 	ftMap["operatingsystem_ids"] = ft.OperatingSystemIds
+	ftMap["organization_ids"] = ft.Organizations
+	ftMap["location_ids"] = ft.Locations
 
 	// only include the template combination attributes if it is set.
 	// The Foreman API will return "500: Internal Server Error" with the
@@ -165,6 +171,13 @@ func (ft *ForemanProvisioningTemplate) UnmarshalJSON(b []byte) error {
 	}
 	if ft.Locked, ok = ftMap["locked"].(bool); !ok {
 		ft.Locked = false
+	}
+
+	if ft.Organizations, ok = ftMap["organization_ids"].([]int); !ok {
+		ft.Organizations = []int{}
+	}
+	if ft.Locations, ok = ftMap["location_ids"].([]int); !ok {
+		ft.Locations = []int{}
 	}
 	// NOTE(ALL): Properties unmarshalled are of type float64 as opposed to int, hence the below testing
 	// Without this, properties will define as default values in state file.
