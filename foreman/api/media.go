@@ -39,6 +39,10 @@ type ForemanMedia struct {
 	OSFamily string `json:"os_family"`
 	// IDs of operating systems associated with this media
 	OperatingSystemIds []int `json:"operatingsystem_ids"`
+	// ID of the organization
+	Organizations []int `json:"organization_ids"`
+	// ID of the location
+	Locations []int `json:"location_ids"`
 }
 
 // ForemanMedia struct used for JSON decode.  Foreman API returns the

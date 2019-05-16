@@ -97,6 +97,26 @@ func resourceForemanMedia() *schema.Resource {
 				},
 				Description: "IDs of the operating systems associated with this media.",
 			},
+
+			"organizations": &schema.Schema{
+				Type:     schema.TypeList,
+				Optional: true,
+				ForceNew: false,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
+				Description: "IDs of organizations this host belongs to",
+			},
+
+			"locations": &schema.Schema{
+				Type:     schema.TypeList,
+				Optional: true,
+				ForceNew: false,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
+				Description: "IDs of locations this host belongs to",
+			},
 		},
 	}
 }
@@ -126,6 +146,16 @@ func buildForemanMedia(d *schema.ResourceData) *api.ForemanMedia {
 		media.OSFamily = attr.(string)
 	}
 
+	if attr, ok = d.GetOk("organizations"); ok {
+		attrList := attr.([]interface{})
+		media.Organizations = conv.InterfaceSliceToIntSlice(attrList)
+	}
+
+	if attr, ok = d.GetOk("locations"); ok {
+		attrList := attr.([]interface{})
+		media.Locations = conv.InterfaceSliceToIntSlice(attrList)
+	}
+
 	if attr, ok = d.GetOk("operatingsystem_ids"); ok {
 		attrSet := attr.(*schema.Set)
 		media.OperatingSystemIds = conv.InterfaceSliceToIntSlice(attrSet.List())
@@ -144,6 +174,8 @@ func setResourceDataFromForemanMedia(d *schema.ResourceData, fm *api.ForemanMedi
 	d.Set("path", fm.Path)
 	d.Set("os_family", fm.OSFamily)
 	d.Set("operatingsystem_ids", fm.OperatingSystemIds)
+	d.Set("organisations", fm.Organizations)
+	d.Set("locations", fm.Locations)
 }
 
 // -----------------------------------------------------------------------------
