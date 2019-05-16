@@ -281,12 +281,12 @@ func buildForemanHostgroup(d *schema.ResourceData) *api.ForemanHostgroup {
 		hostgroup.RealmId = attr.(int)
 	}
 
-	if attr, ok = d.GetOk("location_id"); ok {
-		hostgroup.LocationIds = attr.([]int)
+	if attr, ok = d.GetOk("locations"); ok {
+		hostgroup.Locations = attr.([]int)
 	}
 
-	if attr, ok = d.GetOk("organization_id"); ok {
-		hostgroup.OrganizationIds = attr.([]int)
+	if attr, ok = d.GetOk("organizations"); ok {
+		hostgroup.Organizations = attr.([]int)
 	}
 
 	if attr, ok = d.GetOk("subnet_id"); ok {
@@ -316,8 +316,8 @@ func setResourceDataFromForemanHostgroup(d *schema.ResourceData, fh *api.Foreman
 	d.Set("puppet_ca_proxy_id", fh.PuppetCAProxyId)
 	d.Set("puppet_proxy_id", fh.PuppetProxyId)
 	d.Set("realm_id", fh.RealmId)
-	d.Set("organization_id", fh.OrganizationIds)
-	d.Set("location_id", fh.LocationIds)
+	d.Set("organizations", fh.Organizations)
+	d.Set("locations", fh.Locations)
 	d.Set("subnet_id", fh.SubnetId)
 }
 
