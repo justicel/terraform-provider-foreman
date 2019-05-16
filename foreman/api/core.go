@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"strconv"
 )
 
@@ -98,4 +99,13 @@ type QueryResponseSort struct {
 	Order string `json:"order,omitempty"`
 	// Which field to order by
 	By string `json:"by,omitempty"`
+}
+
+// Wraps the JSON output in a structure with its own name.
+// As of Foreman 1.21 this is required for most if not all API calls
+func wrapJSON(name string, item interface{}) ([]byte, error) {
+	wrapped := map[string]interface{}{
+		name: item,
+	}
+	return json.Marshal(wrapped)
 }

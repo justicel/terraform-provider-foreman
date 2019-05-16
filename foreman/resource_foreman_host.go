@@ -159,7 +159,22 @@ func resourceForemanHost() *schema.Resource {
 				ValidateFunc: validation.IntAtLeast(0),
 				Description:  "ID of an image to be used as base for this host when cloning",
 			},
-
+			"organization_id": &schema.Schema{
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ForceNew:     true,
+				Default:      2,
+				ValidateFunc: validation.IntAtLeast(0),
+				Description:  "ID of an organization this host belongs to",
+			},
+			"location_id": &schema.Schema{
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ForceNew:     true,
+				Default:      1,
+				ValidateFunc: validation.IntAtLeast(0),
+				Description:  "ID of an location this host belongs to",
+			},
 			// -- Key Components --
 			"interfaces_attributes": &schema.Schema{
 				Type:        schema.TypeSet,
@@ -330,6 +345,8 @@ func buildForemanHost(d *schema.ResourceData) *api.ForemanHost {
 	host.Name = d.Get("name").(string)
 	host.Comment = d.Get("comment").(string)
 	host.Method = d.Get("method").(string)
+	host.LocationId = d.Get("location_id").(int)
+	host.OrganizationId = d.Get("organization_id").(int)
 
 	if attr, ok = d.GetOk("domain_id"); ok {
 		host.DomainId = attr.(int)
@@ -507,6 +524,8 @@ func setResourceDataFromForemanHost(d *schema.ResourceData, fh *api.ForemanHost)
 	d.Set("tags", fh.HostParameter)
 	d.Set("domain_id", fh.DomainId)
 	d.Set("environment_id", fh.EnvironmentId)
+	d.Set("organization_id", fh.OrganizationId)
+	d.Set("location_id", fh.LocationId)
 	d.Set("hostgroup_id", fh.HostgroupId)
 	d.Set("operatingsystem_id", fh.OperatingSystemId)
 	d.Set("medium_id", fh.MediumId)

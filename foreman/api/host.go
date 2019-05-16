@@ -61,6 +61,10 @@ type ForemanHost struct {
 	MediumId int `json:"medium_id"`
 	// ID of the image that should be cloned for this host
 	ImageId int `json:"image_id"`
+	// ID of the organization this machine belongs to
+	OrganizationId int `json:"organization_id"`
+	// ID of the location this machine belongs to
+	LocationId int `json:"location_id"`
 	// Whether or not to Enable BMC Functionality on this host
 	EnableBMC bool
 	// Boolean to track success of BMC Calls
@@ -149,6 +153,8 @@ func (fh ForemanHost) MarshalJSON() ([]byte, error) {
 	fhMap["image_id"] = intIdToJSONString(fh.ImageId)
 	fhMap["hostgroup_id"] = intIdToJSONString(fh.HostgroupId)
 	fhMap["environment_id"] = intIdToJSONString(fh.EnvironmentId)
+	fhMap["organization_id"] = intIdToJSONString(fh.OrganizationId)
+	fhMap["location_id"] = intIdToJSONString(fh.LocationId)
 	if len(fh.InterfacesAttributes) > 0 {
 		fhMap["interfaces_attributes"] = fh.InterfacesAttributes
 	}
@@ -210,6 +216,16 @@ func (fh *ForemanHost) UnmarshalJSON(b []byte) error {
 		fh.EnvironmentId = 0
 	} else {
 		fh.EnvironmentId = int(fhMap["environment_id"].(float64))
+	}
+	if _, ok = fhMap["organization_id"].(float64); !ok {
+		fh.OrganizationId = 0
+	} else {
+		fh.OrganizationId = int(fhMap["organization_id"].(float64))
+	}
+	if _, ok = fhMap["location_id"].(float64); !ok {
+		fh.LocationId = 0
+	} else {
+		fh.LocationId = int(fhMap["location_id"].(float64))
 	}
 	if _, ok = fhMap["hostgroup_id"].(float64); !ok {
 		fh.HostgroupId = 0
@@ -307,7 +323,7 @@ func (c *Client) CreateHost(h *ForemanHost, retryCount int) (*ForemanHost, error
 
 	reqEndpoint := fmt.Sprintf("/%s", HostEndpointPrefix)
 
-	hJSONBytes, jsonEncErr := json.Marshal(h)
+	hJSONBytes, jsonEncErr := wrapJSON("host", h)
 	if jsonEncErr != nil {
 		return nil, jsonEncErr
 	}
@@ -383,7 +399,7 @@ func (c *Client) UpdateHost(h *ForemanHost, retryCount int) (*ForemanHost, error
 
 	reqEndpoint := fmt.Sprintf("/%s/%d", HostEndpointPrefix, h.Id)
 
-	hJSONBytes, jsonEncErr := json.Marshal(h)
+	hJSONBytes, jsonEncErr := wrapJSON("host", h)
 	if jsonEncErr != nil {
 		return nil, jsonEncErr
 	}

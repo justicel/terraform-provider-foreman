@@ -191,11 +191,7 @@ func (c *Client) CreateProvisioningTemplate(t *ForemanProvisioningTemplate) (*Fo
 
 	reqEndpoint := fmt.Sprintf("/%s", ProvisioningTemplateEndpointPrefix)
 
-	wrapper := struct {
-		ProvisioningTemplate *ForemanProvisioningTemplate `json:"provisioning_template"`
-	}{t}
-
-	tJSONBytes, jsonEncErr := json.Marshal(wrapper)
+	tJSONBytes, jsonEncErr := wrapJSON("provisioning_template", t)
 	if jsonEncErr != nil {
 		return nil, jsonEncErr
 	}
@@ -260,11 +256,7 @@ func (c *Client) UpdateProvisioningTemplate(t *ForemanProvisioningTemplate) (*Fo
 
 	reqEndpoint := fmt.Sprintf("/%s/%d", ProvisioningTemplateEndpointPrefix, t.Id)
 
-	wrapper := struct {
-		ProvisioningTemplate *ForemanProvisioningTemplate `json:"provisioning_template"`
-	}{t}
-
-	tJSONBytes, jsonEncErr := json.Marshal(wrapper)
+	tJSONBytes, jsonEncErr := wrapJSON("provisioning_template", t)
 	if jsonEncErr != nil {
 		return nil, jsonEncErr
 	}

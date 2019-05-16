@@ -44,6 +44,10 @@ type ForemanHostgroup struct {
 	DomainId int `json:"domain_id"`
 	// ID of the environment associated with this hostgroup
 	EnvironmentId int `json:"environment_id"`
+	// ID of the organization
+	OrganizationId int `json:"organization_id"`
+	// ID of the location
+	LocationId int `json:"location_id"`
 	// ID of the media associated with this hostgroup
 	MediaId int `json:"medium_id"`
 	// ID of the operating system associated with this hostgroup
@@ -90,6 +94,8 @@ func (fh ForemanHostgroup) MarshalJSON() ([]byte, error) {
 	fhMap["puppet_ca_proxy_id"] = intIdToJSONString(fh.PuppetCAProxyId)
 	fhMap["puppet_proxy_id"] = intIdToJSONString(fh.PuppetProxyId)
 	fhMap["realm_id"] = intIdToJSONString(fh.RealmId)
+	fhMap["organization_id"] = intIdToJSONString(fh.OrganizationId)
+	fhMap["location_id"] = intIdToJSONString(fh.LocationId)
 	fhMap["subnet_id"] = intIdToJSONString(fh.SubnetId)
 
 	log.Debugf("fhMap: [%v]", fhMap)
@@ -110,7 +116,7 @@ func (c *Client) CreateHostgroup(h *ForemanHostgroup) (*ForemanHostgroup, error)
 
 	reqEndpoint := fmt.Sprintf("/%s", HostgroupEndpointPrefix)
 
-	hJSONBytes, jsonEncErr := json.Marshal(h)
+	hJSONBytes, jsonEncErr := wrapJSON("hostgroup", h)
 	if jsonEncErr != nil {
 		return nil, jsonEncErr
 	}
@@ -173,7 +179,7 @@ func (c *Client) UpdateHostgroup(h *ForemanHostgroup) (*ForemanHostgroup, error)
 
 	reqEndpoint := fmt.Sprintf("/%s/%d", HostgroupEndpointPrefix, h.Id)
 
-	hJSONBytes, jsonEncErr := json.Marshal(h)
+	hJSONBytes, jsonEncErr := wrapJSON("hostgroup", h)
 	if jsonEncErr != nil {
 		return nil, jsonEncErr
 	}
