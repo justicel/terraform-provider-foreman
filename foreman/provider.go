@@ -182,6 +182,8 @@ func Provider() terraform.ResourceProvider {
 			"foreman_image":                dataSourceForemanImage(),
 			"foreman_parameter":            dataSourceForemanParameter(),
 			"foreman_defaulttemplate":      dataSourceForemanDefaultTemplate(),
+			"foreman_location":             dataSourceForemanLocation(),
+			"foreman_organization":         dataSourceForemanOrganization(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

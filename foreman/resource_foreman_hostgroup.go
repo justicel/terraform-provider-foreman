@@ -183,19 +183,23 @@ func resourceForemanHostgroup() *schema.Resource {
 				Description:  "ID of the subnet associated with the hostgroup.",
 			},
 
-			"organization_id": &schema.Schema{
-				Type:        schema.TypeList,
-				Optional:    true,
-				ForceNew:    false,
-				Default:     []int{2},
+			"organizations": &schema.Schema{
+				Type:     schema.TypeList,
+				Optional: true,
+				ForceNew: false,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
 				Description: "IDs of organizations this host belongs to",
 			},
 
-			"location_id": &schema.Schema{
-				Type:        schema.TypeInt,
-				Optional:    true,
-				ForceNew:    false,
-				Default:     []int{1},
+			"locations": &schema.Schema{
+				Type:     schema.TypeInt,
+				Optional: true,
+				ForceNew: false,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
 				Description: "IDs of locations this host belongs to",
 			},
 		},
